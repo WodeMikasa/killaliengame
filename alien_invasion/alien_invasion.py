@@ -110,6 +110,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _update_aliens(self):
         """更新外星人群中所有外星人的位置"""
@@ -140,6 +141,7 @@ class AlienInvasion:
         """让玩家单机play开始游戏"""
         button_clicked=self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active=True
 
