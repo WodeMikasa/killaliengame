@@ -3,6 +3,7 @@ from time import sleep
 import pygame
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 from bullet import Bullet
@@ -26,13 +27,14 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
         # 创建一个用于存储游戏统计信息的实例
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
         self.play_button = Button(self, "play")
-        self.bg_color = (230, 230, 230)
+        # self.bg_color = (230, 230, 230)
 
     def _create_fleet(self):
         """创建外星人群"""
@@ -106,11 +108,18 @@ class AlienInvasion:
         # 检查是否有子弹集中了外星人
         # 如果是会删除相应的子弹和外星人
         collections = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        if collections:
+            for aliens in collections.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+                self.sb.prep_score()
+                self.sb.check_high_score()
 
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            self.stats.level+=1
+            self.sb.prep_level()
 
     def _update_aliens(self):
         """更新外星人群中所有外星人的位置"""
@@ -139,11 +148,13 @@ class AlienInvasion:
 
     def _check_play_button(self, mouse_pos):
         """让玩家单机play开始游戏"""
-        button_clicked=self.play_button.rect.collidepoint(mouse_pos)
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
             self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
-            self.stats.game_active=True
+            self.stats.game_active = True
+            self.sb.prep_score()
+            self.sb.prep_level()
 
             self.aliens.empty()
             self.bullets.empty()
@@ -182,6 +193,7 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+        self.sb.show_score()
         if not self.stats.game_active:
             self.play_button.draw_button()
 
