@@ -24,7 +24,7 @@ class Scoreboard:
         """将得分转化为一副渲染的图像"""
         # score_str = str(self.stats.score)
         round_score = round(self.stats.score, -1)
-        score_str = "{:,}".format(round_score)
+        score_str = "Score:{:,}".format(round_score)
         self.score_image = self.font.render(score_str, True, self.text_color, self.settings.bg_color)
         # 在屏幕右上角显示得分
         self.score_rect = self.score_image.get_rect()
@@ -33,7 +33,7 @@ class Scoreboard:
 
     def prep_high_score(self):
         high_score = round(self.stats.high_score, -1)
-        high_score_str = "{:,}".format(high_score)
+        high_score_str = "High Score:{:,}".format(high_score)
         self.high_score_image = self.font.render(high_score_str, True, self.text_color, self.settings.bg_color)
 
         self.high_score_rect = self.high_score_image.get_rect()
