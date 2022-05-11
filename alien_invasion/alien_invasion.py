@@ -155,6 +155,7 @@ class AlienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.perp_ships()
 
             self.aliens.empty()
             self.bullets.empty()
@@ -203,6 +204,7 @@ class AlienInvasion:
         """响应飞船被外星人撞到"""
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
+            self.sb.perp_ships()
             self.aliens.empty()
             self.bullets.empty()
 
